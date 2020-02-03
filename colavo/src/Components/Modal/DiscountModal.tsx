@@ -5,13 +5,12 @@ import Card from '../Card/Card'
 type Itemsprops ={
   show:boolean
   setshow:Function
-  setselect:Function
+  setselectDiscount:Function
   Data:Object
   title: string
 }
 
-export default function Discount({ show, setshow, Data, title, setselect }:Itemsprops) {
-  const [selectDiscount, setselectDiscount] = useState()
+export default function Discount({ show, setshow, Data, title, setselectDiscount }:Itemsprops) {
   let List:Array<Object> = Object.entries(Data)
   let selectDiscountObj:any = {}
 
@@ -28,7 +27,7 @@ export default function Discount({ show, setshow, Data, title, setselect }:Items
   >
     {List.map( (props:{[index: string]:any}) => 
         <div key={props[0]}>
-        <Card title={title} key={props[0]} Data={props[1]} setselectItems={setselectDiscount} selectDiscountObj={selectDiscountObj} setshow={setshow}/>
+        {/* <Card title={title} key={props[0]} Data={props[1]} setselectItems={setselectDiscount} selectDiscountObj={selectDiscountObj} show={show}/> */}
         </div>
     )}
     <button onClick={handleClickCheck}>확인</button>

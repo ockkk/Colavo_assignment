@@ -1,51 +1,51 @@
 import React, {useState} from 'react'
-import { Icon,Button } from 'antd';
+import { Icon, Button, Dropdown, Menu } from 'antd';
 
 type Counterprops = {
   name:string
-  selectItemObj:any
+}
+let numberArr:Array<number> = []
+for(let i = 1; i < 11; i++){
+  numberArr.push(i)
 }
 
-export default function Counter({ name, selectItemObj }:Counterprops) {
-  const [visible, setvisible] = useState<string>("none")
+export default function Counter({ name }:Counterprops) {
   const [count, setcount] = useState<string>("1")
-  const [showCount, setshowCount] = useState<string>("1")
   
-  let numberArr:Array<number> = []
-  for(let i = 1; i < 11; i++){
-    numberArr.push(i)
-  }
+  const handleClickCount = (e:any):void => {
+    setcount(e.key)
+    let oldStorage:any = localStorage.getItem('items')
+    let newSrotage:any = []
 
-  const handleClickDropdown = ():void => {
-    visible === "none"? setvisible("block") : setvisible("none")
-  }
-
-  const hadleClickCount = (e:any):void => {
-    setcount( e.target.innerHTML)
-  }
-
-  const handleClickConfirm = ():void => {
-    selectItemObj[name]["counter"] = count
-    setshowCount(count)
-    setvisible("none")
+    newSrotage = JSON.parse(oldStorage)
+    
+    for(let i = 0; i < newSrotage.length; i++){
+      if(newSrotage[i][name]){
+        newSrotage[i][name]["count"] = e.key
+      } 
+    }
+    localStorage.setItem("items",JSON.stringify(newSrotage))
   }
   
+  let menu = (
+    <Menu>
+      {
+        numberArr.map((val:number) => {
+          return(
+          <Menu.Item key={val} onClick={handleClickCount}>
+            {val}
+          </Menu.Item>)
+        })
+      }
+    </Menu>
+  )
   return (
     <div>
-      <button onClick={handleClickDropdown}> {showCount} <Icon type="down" /></button>
-        <ul style={{display:`${visible}`}}>
-        {
-          numberArr.map( (val:number) => {
-          return  (
-              <li key={val} onClick={hadleClickCount}> 
-                {val} 
-              </li>
-            )
-          })
-        }
-        <Button onClick={handleClickDropdown}>실행취소</Button>
-        <Button onClick={handleClickConfirm}>완료</Button>
-      </ul>
+        <Dropdown overlay={menu} trigger={["click"]}>
+          <Button>
+            {count} <Icon type="down"/>
+          </Button>
+        </Dropdown>
     </div>
   )
 }

@@ -6,27 +6,38 @@ import {Checkbox} from 'antd'
 type Cardprops = {
   title: string
   Data: {[index: string]:string}
-  setselectItems:Function
-  setshow:Function
-  selectItemObj?:any
+  show:boolean
   selectDiscountObj?:any
 }
 
-export default function Card({ title, Data, setselectItems, selectItemObj, selectDiscountObj }:Cardprops) {
+export default function Card({ title, Data, show,selectDiscountObj }:Cardprops) {
   const [checked, setchecked] = useState<boolean>(false)
 
   const handleItemCheck = (e:any):void => {
     let items:Array<string> = e.target.value.split(",")
-    let name:string= items[0]
-    let price:string = items[1]
-
+    let name = items[0]
+    let price = items[1]
+    let obj:any ={}
+    obj[name] ={"price":price, "count": "1"}
+    let oldStorage:any = localStorage.getItem('items')
+    let newSrotage:any = []
+    
     if(checked){
       setchecked(false)
-      delete selectItemObj[name]
+      newSrotage = JSON.parse(oldStorage)
+      newSrotage = newSrotage.filter((val:any) => !val[name])
+      localStorage.setItem("items", JSON.stringify(newSrotage))
     } else {
       setchecked(true)
-      selectItemObj[name] = {"price" : price, "counter" : 1}
-      setselectItems(selectItemObj)
+      if(oldStorage){
+        newSrotage = JSON.parse(oldStorage)
+        for(let i = 0; i < newSrotage.length; i++){
+          if(!newSrotage[i][name]){
+            localStorage.setItem("items", JSON.stringify(newSrotage.concat(obj))) 
+          } 
+        }
+      }
+      localStorage.setItem("items", JSON.stringify(newSrotage.concat(obj)))
     }
   }
 
@@ -43,7 +54,11 @@ export default function Card({ title, Data, setselectItems, selectItemObj, selec
       selectDiscountObj[name] = rate
     }
   }
-  useEffect(()=> {console.log("Card 실행")},[])
+
+  useEffect(()=> {
+    setchecked(false)
+  },[show])
+
   return (
     <Body>
       <Box>
@@ -61,7 +76,7 @@ export default function Card({ title, Data, setselectItems, selectItemObj, selec
           {Data["rate"]}
         </Detail>
         </span>
-        { title === "시술" && checked ? <Counter name={Data["name"]} selectItemObj={selectItemObj}/> : undefined}
+        { title === "시술" && checked ? <Counter name={Data["name"]} /> : undefined}
       </Box>
     </Body>
   )

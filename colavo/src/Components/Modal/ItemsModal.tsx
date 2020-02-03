@@ -5,21 +5,15 @@ import Card from '../Card/Card'
 type Itemsprops ={
   show:boolean
   setshow:Function
-  setselect:Function
+  setselectItems:Function
   Data:Object
   title: string
 }
 
-export default function Items({ show, setshow, Data, title, setselect}:Itemsprops) {
-  const [selectItems, setselectItems] = useState<Array<string>>([])
-
+export default function Items({ show, setshow, Data, title, setselectItems}:Itemsprops) {
   let List:Array<Object> = Object.entries(Data)
-  let selectItemObj:any = {}
-
-  console.log("MODAL",selectItems)
   const handleClickCheck = ():void => {
     show ? setshow(false): setshow(true)
-    setselect()
   }
 
   return (
@@ -28,11 +22,12 @@ export default function Items({ show, setshow, Data, title, setselect}:Itemsprop
     centered
     visible={show}
     onCancel={() => setshow(false)}
+    style={{ height: "500px", overflow: "auto"}}
   >
-    {List.map( (props:{[index: string]:any}) => 
-        <div key={props[0]}>
-        <Card title={title} key={props[0]} Data={props[1]} setselectItems={setselectItems} selectItemObj={selectItemObj} setshow={setshow}/>
-        </div>
+    {List.map( (val:{[index: string]:any}) => 
+        <div key={val[0]}>
+              <Card key={val[0]} Data={val[1]} title={title} show={show}/>
+         </div>
     )}
     <button onClick={handleClickCheck}>확인</button>
   </Modal>

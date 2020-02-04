@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react'
+import React from 'react'
 import { CustomModal } from './style'
 import Card from '../Card/Card'
 
@@ -19,12 +19,15 @@ export default function Items({ show, setshow, Data, title, setselectItems, rend
     let storageData:any= localStorage.getItem("items")
     localStorage.setItem("previtems", storageData)
     setselectItems(JSON.parse(storageData))
+  
+    renderTotal()
   }
 
   const handleClickCancle = ():void => {
     setshow(false)
     let prevStorage:any = localStorage.getItem("previtems")
     prevStorage ? localStorage.setItem("items", prevStorage) : localStorage.removeItem("items")
+
   }
 
   return (
@@ -38,7 +41,7 @@ export default function Items({ show, setshow, Data, title, setselectItems, rend
   >
     {List.map( (val:{[index: string]:any}) => 
         <div key={val[0]}>
-              <Card key={val[0]} Data={val[1]} title={title} show={show} renderTotal={renderTotal}/>
+              <Card key={val[0]} Data={val[1]} title={title} show={show} renderTotal={renderTotal} setselectItems={setselectItems}/>
          </div>
     )}
   </CustomModal>

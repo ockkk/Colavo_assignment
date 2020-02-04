@@ -21,13 +21,12 @@ export default function Basket() {
   })
 
   const [showItems, setshowItems] = useState<boolean>(false)
-  const [selectItems, setselectItems] = useState([])
+  const [selectItems, setselectItems] = useState<any>([])
 
   const [showDiscounts, setshowDiscounts] = useState<boolean>(false)
   const [selectDiscount, setselectDiscount] = useState<any>([])
 
   const [total, settotal] = useState("0")
-  let discountItemList
 
   const renderTotal = () => {
     let itemStorage:any = localStorage.getItem("items")
@@ -41,9 +40,7 @@ export default function Basket() {
         sum += Number(val["price"]) * Number(val["count"])
       })
     }
-    console.log("실행 되니 ?")
     if(discountList){
-      console.log("[TOTAL]",discountList)
       discountList.map((val:{[index:string]:string})=>{
         sum -= Number(val["discount"])
       })
@@ -68,29 +65,50 @@ export default function Basket() {
       </UserNameBox>
       <ButtonBox>
         <Antdbutton onClick={() => setshowItems(true)}>시술</Antdbutton>
-        <ItemsModal show={showItems} setshow={setshowItems} Data={dataObj.items} setselectItems={setselectItems} renderTotal={renderTotal} title="시술"/>
+        <ItemsModal 
+          show={showItems} 
+          setshow={setshowItems} 
+          Data={dataObj.items} 
+          setselectItems={setselectItems} 
+          renderTotal={renderTotal} 
+          title="시술"
+        />
         <span style={{padding:"15px"}}/>
         <Antdbutton onClick={()=> setshowDiscounts(true)}>할인</Antdbutton>
-        <DiscountModal show={showDiscounts} setshow={setshowDiscounts} Data={dataObj.discounts} setselectDiscount={setselectDiscount} renderTotal={renderTotal} title="할인"/> 
+        <DiscountModal 
+          show={showDiscounts} 
+          setshow={setshowDiscounts} 
+          Data={dataObj.discounts} 
+          setselectDiscount={setselectDiscount} 
+          renderTotal={renderTotal} 
+          setselectItems={setselectItems} 
+          title="할인"
+        /> 
       </ButtonBox>
       <BasketBox>
-        {selectItems.map((val:{[index:string]:string}, index) => 
+        {selectItems.map((val:{[index:string]:string}, index:number) => 
         <CardBody key={index}>
           <div>
           <span>{val["name"]}</span>
-          <Counter name={val["name"]} title="바구니" renderTotal={renderTotal}/>
+          <Counter name={val["name"]} title="바구니" renderTotal={renderTotal} setselectItems={setselectItems}/>
           </div>
           <p>{val["price"]}</p>
         </CardBody>
         )}
-        {selectDiscount.map((val:{[index:string]:string}, index:any) => 
+        {selectDiscount.map((val:{[index:string]:string}, index:number) => 
         <CardBody key={index}>
           <div>
             <span>{val["name"]}</span>
-            <DiscountItemsDropdown discountName={val["name"]} itemList={val["items"]} rate={val["rate"]}/>
+            <DiscountItemsDropdown 
+              discountName={val["name"]} 
+              itemList={val["items"]} 
+              rate={val["rate"]} 
+              setselectDiscount={setselectDiscount}
+              renderTotal={renderTotal}
+            />
           </div>
-          <span>{val["rate"]}</span>
           <span>-{val["discount"]}</span>
+          <span>({val["rate"]}%)</span>
         </CardBody>
         )}
       </BasketBox>
@@ -102,7 +120,6 @@ export default function Basket() {
           {total}
         </Text>
       </FooterBox>
-      {/* <button>다음</button> */}
     </Body>
   )
 }

@@ -1,57 +1,77 @@
 import React, {useState, useEffect} from 'react'
 import Counter from '../Counter/Counter'
-import { Body, Box, Title, Detail } from './style'
-import {Checkbox} from 'antd'
+import { CardBody, Box, Title, Detail, Check } from './style'
 
 type Cardprops = {
   title: string
   Data: {[index: string]:string}
-  show:boolean
-  selectDiscountObj?:any
+  show?:boolean
+  renderTotal:Function
 }
 
-export default function Card({ title, Data, show,selectDiscountObj }:Cardprops) {
+export default function Card({ title, Data, show, renderTotal}:Cardprops) {
   const [checked, setchecked] = useState<boolean>(false)
 
   const handleItemCheck = (e:any):void => {
     let items:Array<string> = e.target.value.split(",")
     let name = items[0]
     let price = items[1]
-    let obj:any ={}
-    obj[name] ={"price":price, "count": "1"}
+    let obj:any ={"name": name, "price":price, "count": "1"}
     let oldStorage:any = localStorage.getItem('items')
     let newSrotage:any = []
     
     if(checked){
       setchecked(false)
       newSrotage = JSON.parse(oldStorage)
-      newSrotage = newSrotage.filter((val:any) => !val[name])
+      newSrotage = newSrotage.filter((val:{[index:string]:string}) => val["name"] !== name)
       localStorage.setItem("items", JSON.stringify(newSrotage))
     } else {
       setchecked(true)
       if(oldStorage){
         newSrotage = JSON.parse(oldStorage)
-        for(let i = 0; i < newSrotage.length; i++){
-          if(!newSrotage[i][name]){
-            localStorage.setItem("items", JSON.stringify(newSrotage.concat(obj))) 
-          } 
-        }
+        newSrotage = newSrotage.filter((val:{[index:string]:string}) => val["name"] !== name)
+        localStorage.setItem("items", JSON.stringify(newSrotage)) 
       }
       localStorage.setItem("items", JSON.stringify(newSrotage.concat(obj)))
     }
   }
 
   const handleDiscountCheck = (e:any):void => {
-    let Discount = e.target.value.split(",")
-    let name = Discount[0]
-    let rate = Discount[1]
+    let discount = e.target.value.split(",")
+    let name = discount[0]
+    let rate = discount[1]
 
+    let itemStorage:any = localStorage.getItem('items')
+    let itemList = JSON.parse(itemStorage)
+    let itemsName:any = []
+    let itemsPrice = 0
+    
+    if(itemList){
+      itemList.map((val:{[index:string]:string})=>{
+        itemsName.push({"name": val["name"], "price": val["price"], "count":val["count"], "discountcheck":true})
+        itemsPrice += Number(val["price"]) * Number(val["count"])
+      })
+    }
+    let itemDiscount = itemsPrice * rate
+
+    let obj:any ={"name": name, "rate":rate, "items": itemsName, "discount": itemDiscount}
+    let oldStorage:any = localStorage.getItem('discount')
+    let newSrotage:any = []
+    
+       
     if(checked){
       setchecked(false)
-      delete selectDiscountObj[name]
+      newSrotage = JSON.parse(oldStorage)
+      newSrotage = newSrotage.filter((val:{[index:string]:string}) => val["name"] !== name)
+      localStorage.setItem("discount", JSON.stringify(newSrotage))
     } else {
       setchecked(true)
-      selectDiscountObj[name] = rate
+      if(oldStorage){
+        newSrotage = JSON.parse(oldStorage)
+        newSrotage = newSrotage.filter((val:{[index:string]:string}) => val["name"] !== name)
+        localStorage.setItem("discount", JSON.stringify(newSrotage)) 
+      }
+      localStorage.setItem("discount", JSON.stringify(newSrotage.concat(obj)))
     }
   }
 
@@ -60,24 +80,26 @@ export default function Card({ title, Data, show,selectDiscountObj }:Cardprops) 
   },[show])
 
   return (
-    <Body>
+    <CardBody>
       <Box>
         <span>
-        {title === "시술" ? <Checkbox onClick={handleItemCheck} checked={checked} value={[Data["name"],Data["price"]]}/> : 
-         title === "할인" ? <Checkbox onClick={handleDiscountCheck} checked={checked} value={[Data["name"], Data["rate"]]}/> : 
+        {title === "시술" ? <Check onClick={handleItemCheck} checked={checked} value={[Data["name"],Data["price"]]}/> : 
+         title === "할인" ? <Check onClick={handleDiscountCheck} checked={checked} value={[Data["name"], Data["rate"]]}/> : 
          undefined}
         </span>
         <span>
         <Title>
           {Data["name"]}
+          { title === "시술" && checked ? <Counter name={Data["name"]} title={"시술"} renderTotal={renderTotal}/> : undefined}
         </Title>
-        <Detail>
-          {Data["price"]}
-          {Data["rate"]}
-        </Detail>
+          <Detail>
+            {Data["price"]}
+          </Detail>
+          <Detail>
+            {Data["rate"]}
+          </Detail>
         </span>
-        { title === "시술" && checked ? <Counter name={Data["name"]} /> : undefined}
       </Box>
-    </Body>
+    </CardBody>
   )
 }

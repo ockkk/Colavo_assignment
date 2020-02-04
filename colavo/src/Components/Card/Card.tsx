@@ -7,9 +7,10 @@ type Cardprops = {
   Data: {[index: string]:string}
   show?:boolean
   renderTotal:Function
+  setselectItems:Function
 }
 
-export default function Card({ title, Data, show, renderTotal}:Cardprops) {
+export default function Card({ title, Data, show, renderTotal, setselectItems}:Cardprops) {
   const [checked, setchecked] = useState<boolean>(false)
 
   const handleItemCheck = (e:any):void => {
@@ -90,7 +91,7 @@ export default function Card({ title, Data, show, renderTotal}:Cardprops) {
         <span>
         <Title>
           {Data["name"]}
-          { title === "시술" && checked ? <Counter name={Data["name"]} title={"시술"} renderTotal={renderTotal}/> : undefined}
+          { title === "시술" && checked ? <Counter name={Data["name"]} title={"시술"} renderTotal={renderTotal} setselectItems={setselectItems}/> : undefined}
         </Title>
           <Detail>
             {Data["price"]}

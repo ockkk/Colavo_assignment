@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react'
+import React from 'react'
 import { CustomModal } from './style'
 import Card from '../Card/Card'
 
@@ -9,9 +9,10 @@ type Itemsprops ={
   Data:Object
   title: string
   renderTotal: Function
+  setselectItems:Function
 }
 
-export default function Discount({ show, setshow, Data, title, setselectDiscount, renderTotal }:Itemsprops) {
+export default function Discount({ show, setshow, Data, title, setselectDiscount, renderTotal, setselectItems }:Itemsprops) {
   let List:Array<Object> = Object.entries(Data)
 
   const handleClickCheck = ():void => {
@@ -38,7 +39,7 @@ export default function Discount({ show, setshow, Data, title, setselectDiscount
   >
     {List.map( (val:{[index: string]:any}) => 
         <div key={val[0]}>
-          <Card key={val[0]} Data={val[1]} title={title} show={show} renderTotal={renderTotal}/>
+          <Card key={val[0]} Data={val[1]} title={title} show={show} renderTotal={renderTotal} setselectItems={setselectItems}/>
         </div>
     )}
   </CustomModal>

@@ -5,13 +5,15 @@ type Counterprops = {
   name:string
   title:string
   renderTotal:Function
+  setselectItems:Function
 }
+
 let numberArr:Array<number> = []
 for(let i = 1; i < 101; i++){
   numberArr.push(i)
 }
 
-export default function Counter({ name, title, renderTotal }:Counterprops) {
+export default function Counter({ name, title, renderTotal, setselectItems }:Counterprops) {
   const [count, setcount] = useState<string>("1")
   const [baketCount, setbasketCount] = useState<string>()
   
@@ -36,19 +38,16 @@ export default function Counter({ name, title, renderTotal }:Counterprops) {
     newDiscountStorage = JSON.parse(oldDiscountStorage)
     
     if(oldDiscountStorage){
-      console.log(e.key)
       for(let i = 0; i < newDiscountStorage.length; i++){
-        console.log(newDiscountStorage[i])
         newDiscountStorage[i]["items"].map((item:{[index:string]:string}) => {
-          console.log(item)
           if(item["name"] === name){
             item["count"] = e.key
           }
         })
       }
-      console.log("[COUNTER]", newDiscountStorage)
       localStorage.setItem("discount",JSON.stringify(newDiscountStorage))
     }
+
     renderTotal()
   }
   
@@ -87,7 +86,7 @@ export default function Counter({ name, title, renderTotal }:Counterprops) {
   return (
         <Dropdown overlay={menu} trigger={["click"]}>
           <Button style={{float:"right" ,border: "none" , boxShadow:"0 5px 10px rgba(0,0,0,0.1)"}}>
-            {title === "바구니" ? baketCount : count } <Icon type="down"/>
+            {count} <Icon type="down"/>
           </Button>
         </Dropdown>
   )

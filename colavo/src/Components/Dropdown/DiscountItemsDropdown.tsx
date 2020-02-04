@@ -1,15 +1,17 @@
 import React from 'react'
 import {DiscountMenu, Btn} from './stlye'
-import { Menu, Dropdown, Button, Icon } from 'antd'
+import { Menu, Dropdown, Icon, Button } from 'antd'
 
 type DiscountItemsDropdown = {
   itemList:any
   discountName:string
   rate:any
+  setselectDiscount:Function
+  renderTotal:Function
 }
 
-export default function DiscountItemsDropdown({ itemList, discountName, rate }:DiscountItemsDropdown){
-  const handleDIscountItem = (e:any):void => {
+export default function DiscountItemsDropdown({ itemList, discountName, rate, setselectDiscount, renderTotal }:DiscountItemsDropdown){
+   const handleDIscountItem = (e:any):void => {
     let itemName = e.key
     let oldStorage:any = localStorage.getItem('discount')
     let newSrotage:any = []
@@ -20,7 +22,6 @@ export default function DiscountItemsDropdown({ itemList, discountName, rate }:D
       if(val["name"] === discountName){
         val["items"].map((item:{[index:string]:any})=>{
           if(item["name"].indexOf(itemName) === 0){
-            console.log(item["discountcheck"])
             item["discountcheck"] === true? item["discountcheck"] = false : item["discountcheck"] = true
           }
           if(item["discountcheck"]){
@@ -32,29 +33,51 @@ export default function DiscountItemsDropdown({ itemList, discountName, rate }:D
     })
 
     localStorage.setItem("discount", JSON.stringify(newSrotage))
+    renderTotal(newSrotage)
+  }
+
+  const handleClickDelete = () => { 
+    let oldStorage:any = localStorage.getItem('discount')
+    let newSrotage:any = []
+    
+    newSrotage = JSON.parse(oldStorage)
+    newSrotage = newSrotage.filter((val:{[index:string]:string})=> val["name"] !== discountName )
+
+    localStorage.setItem("discount", JSON.stringify(newSrotage))
+    setselectDiscount(newSrotage)
   }
 
   let discountItemList=(
     <div>
     <DiscountMenu
     style={{ 
-      width: "150px",
+      width: "180px",
       height: "150px", 
       overflow: "auto",
       borderRadius: "5px",
-      marginBottom: "13px",
       boxShadow: "0 5px 10px rgba(0,0,0,0.1)"
       }}>
     {
       itemList.map((item:{[index:string]:string}) => 
           <Menu.Item key={item["name"]} onClick={handleDIscountItem}>
+            {/* <Checkbox style={{marginRight: "10px"}}/> */}
             {`${item["name"]} x ${item["count"]} \n
             ${Number(item["price"]) * Number(item["count"])}`}
           </Menu.Item>
       )
     }
     </DiscountMenu>
-    <Btn>삭제</Btn>
+    <Button
+      style={{
+        float: "right",
+        border: "none",
+        borderRadius: "5px",
+        boxShadow: "0 5px 10px rgba(0,0,0,0.1)"
+      }}
+      onClick={handleClickDelete}
+    >
+      삭제
+    </Button>
     </div>
   )
 

@@ -15,7 +15,7 @@ for(let i = 1; i < 101; i++){
 
 export default function Counter({ name, title, renderTotal, setselectItems }:Counterprops) {
   const [count, setcount] = useState<string>("1")
-  const [baketCount, setbasketCount] = useState<string>()
+  const [baketCount, setbasketCount] = useState<string>("1")
   
   const handleClickCount = (e:any):void => {
     setcount(e.key)
@@ -86,7 +86,7 @@ export default function Counter({ name, title, renderTotal, setselectItems }:Cou
   return (
         <Dropdown overlay={menu} trigger={["click"]}>
           <Button style={{float:"right" ,border: "none" , boxShadow:"0 5px 10px rgba(0,0,0,0.1)"}}>
-            {count} <Icon type="down"/>
+            {title === "바구니" ? baketCount : count} <Icon type="down"/>
           </Button>
         </Dropdown>
   )

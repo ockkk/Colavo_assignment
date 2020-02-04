@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import { Modal } from 'antd'  
+import { CustomModal } from './style'
 import Card from '../Card/Card'
 
 type Itemsprops ={
@@ -8,28 +8,39 @@ type Itemsprops ={
   setselectItems:Function
   Data:Object
   title: string
+  renderTotal:Function
 }
 
-export default function Items({ show, setshow, Data, title, setselectItems}:Itemsprops) {
+export default function Items({ show, setshow, Data, title, setselectItems, renderTotal}:Itemsprops) {
   let List:Array<Object> = Object.entries(Data)
+  
   const handleClickCheck = ():void => {
-    show ? setshow(false): setshow(true)
+    setshow(false)
+    let storageData:any= localStorage.getItem("items")
+    localStorage.setItem("previtems", storageData)
+    setselectItems(JSON.parse(storageData))
+  }
+
+  const handleClickCancle = ():void => {
+    setshow(false)
+    let prevStorage:any = localStorage.getItem("previtems")
+    prevStorage ? localStorage.setItem("items", prevStorage) : localStorage.removeItem("items")
   }
 
   return (
-    <Modal
+    <CustomModal
     title={title}
     centered
     visible={show}
-    onCancel={() => setshow(false)}
-    style={{ height: "500px", overflow: "auto"}}
+    bodyStyle={{height:"700px", overflow:"auto"}}
+    onOk={handleClickCheck}
+    onCancel={handleClickCancle}
   >
     {List.map( (val:{[index: string]:any}) => 
         <div key={val[0]}>
-              <Card key={val[0]} Data={val[1]} title={title} show={show}/>
+              <Card key={val[0]} Data={val[1]} title={title} show={show} renderTotal={renderTotal}/>
          </div>
     )}
-    <button onClick={handleClickCheck}>확인</button>
-  </Modal>
+  </CustomModal>
   )
 }

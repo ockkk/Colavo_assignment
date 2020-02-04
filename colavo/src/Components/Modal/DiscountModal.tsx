@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import { Modal } from 'antd'  
+import { CustomModal } from './style'
 import Card from '../Card/Card'
 
 type Itemsprops ={
@@ -8,29 +8,39 @@ type Itemsprops ={
   setselectDiscount:Function
   Data:Object
   title: string
+  renderTotal: Function
 }
 
-export default function Discount({ show, setshow, Data, title, setselectDiscount }:Itemsprops) {
+export default function Discount({ show, setshow, Data, title, setselectDiscount, renderTotal }:Itemsprops) {
   let List:Array<Object> = Object.entries(Data)
-  let selectDiscountObj:any = {}
 
   const handleClickCheck = ():void => {
-    show ? setshow(false): setshow(true)
+    setshow(false)
+    let storageData:any= localStorage.getItem("discount")
+    localStorage.setItem("prevdiscount", storageData)
+    setselectDiscount(JSON.parse(storageData))
+  }
+
+  const handleClickCancle = ():void => {
+    setshow(false)
+    let prevStorage:any = localStorage.getItem("prevdiscount")
+    prevStorage ? localStorage.setItem("discount", prevStorage) : localStorage.removeItem("discount")
   }
 
   return (
-    <Modal
+    <CustomModal
     title={title}
     centered
     visible={show}
-    onCancel={() => setshow(false)}
+    bodyStyle={{height:"700px", overflow:"auto"}}
+    onOk={handleClickCheck}
+    onCancel={handleClickCancle}
   >
-    {List.map( (props:{[index: string]:any}) => 
-        <div key={props[0]}>
-        {/* <Card title={title} key={props[0]} Data={props[1]} setselectItems={setselectDiscount} selectDiscountObj={selectDiscountObj} show={show}/> */}
+    {List.map( (val:{[index: string]:any}) => 
+        <div key={val[0]}>
+          <Card key={val[0]} Data={val[1]} title={title} show={show} renderTotal={renderTotal}/>
         </div>
     )}
-    <button onClick={handleClickCheck}>확인</button>
-  </Modal>
+  </CustomModal>
   )
 }

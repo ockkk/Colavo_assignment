@@ -7,7 +7,8 @@
 ```sh
 npm install
 ```
-#수행 정도
+
+# 수행 정도
 
 - item, discount는 각각 장바구니로 추가/삭제 가능 => 완료
 

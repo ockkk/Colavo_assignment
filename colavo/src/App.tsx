@@ -1,10 +1,15 @@
 import React from 'react';
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Basket from "./Pages/Basket/Basket"
 
-const App = () => {
+const App: React.FC = props => {
   return (
-    <div className="App">
+    <div>
+      <Router>
+        <Route exact path="/" component={Basket}/>
+      </Router>
     </div>
   );
-}
+};
 
 export default App;

@@ -20,10 +20,10 @@ export default function Counter({ name, title, renderTotal, setselectItems }:Cou
   const handleClickCount = (e:any):void => {
     setcount(e.key)
     setbasketCount(e.key)
-    let oldItemStorage:any = localStorage.getItem('items')
-    let newItemsSrotage = []
+    let oldItemStorage:string|null = localStorage.getItem('items')
+    let newItemsSrotage:never[] | any= []
 
-    newItemsSrotage = JSON.parse(oldItemStorage)
+    newItemsSrotage = JSON.parse(oldItemStorage || "{}")
 
     for(let i = 0; i < newItemsSrotage.length; i++){
       if(newItemsSrotage[i]["name"] === name){
@@ -32,10 +32,10 @@ export default function Counter({ name, title, renderTotal, setselectItems }:Cou
     }
     localStorage.setItem("items",JSON.stringify(newItemsSrotage))
 
-    let oldDiscountStorage:any = localStorage.getItem('discount')
+    let oldDiscountStorage:string|null = localStorage.getItem('discount')
     let newDiscountStorage = []
 
-    newDiscountStorage = JSON.parse(oldDiscountStorage)
+    newDiscountStorage = JSON.parse(oldDiscountStorage || "{}")
     
     if(oldDiscountStorage){
       for(let i = 0; i < newDiscountStorage.length; i++){
@@ -52,8 +52,8 @@ export default function Counter({ name, title, renderTotal, setselectItems }:Cou
   }
   
   const BasketCount = () => {
-    let Storage:any = localStorage.getItem("items")
-    let itemList = JSON.parse(Storage)
+    let Storage:string|null = localStorage.getItem("items")
+    let itemList = JSON.parse(Storage || "{}")
     itemList = itemList.filter((val:{[index:string]:string}) => val["name"] === name)
 
     setbasketCount(itemList[0]["count"])

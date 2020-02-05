@@ -17,14 +17,14 @@ export default function Discount({ show, setshow, Data, title, setselectDiscount
 
   const handleClickCheck = ():void => {
     setshow(false)
-    let storageData:any= localStorage.getItem("discount")
-    localStorage.setItem("prevdiscount", storageData)
-    setselectDiscount(JSON.parse(storageData))
+    let storageData:string | null= localStorage.getItem("discount")
+    localStorage.setItem("prevdiscount", storageData || "{}")
+    setselectDiscount(JSON.parse(storageData || "{}"))
   }
 
   const handleClickCancle = ():void => {
     setshow(false)
-    let prevStorage:any = localStorage.getItem("prevdiscount")
+    let prevStorage:string | null = localStorage.getItem("prevdiscount")
     prevStorage ? localStorage.setItem("discount", prevStorage) : localStorage.removeItem("discount")
   }
 

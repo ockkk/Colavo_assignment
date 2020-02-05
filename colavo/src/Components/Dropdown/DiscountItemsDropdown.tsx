@@ -3,9 +3,9 @@ import {DiscountMenu, Btn} from './stlye'
 import { Menu, Dropdown, Icon, Button } from 'antd'
 
 type DiscountItemsDropdown = {
-  itemList:any
+  itemList:Array<{[index:string]:string}>
   discountName:string
-  rate:any
+  rate:number
   setselectDiscount:Function
   renderTotal:Function
 }
@@ -13,12 +13,12 @@ type DiscountItemsDropdown = {
 export default function DiscountItemsDropdown({ itemList, discountName, rate, setselectDiscount, renderTotal }:DiscountItemsDropdown){
    const handleDIscountItem = (e:any):void => {
     let itemName = e.key
-    let oldStorage:any = localStorage.getItem('discount')
-    let newSrotage:any = []
+    let oldStorage:string | null = localStorage.getItem('discount')
+    let newSrotage:Array<{[index:string]:object}> = []
     let itemsPrice:number = 0
 
-    newSrotage = JSON.parse(oldStorage)
-    newSrotage.map((val:any) => {
+    newSrotage = JSON.parse(oldStorage || "{}")
+    newSrotage.map((val:{[index:string]:any}) => {
       if(val["name"] === discountName){
         val["items"].map((item:{[index:string]:any})=>{
           if(item["name"].indexOf(itemName) === 0){
@@ -37,11 +37,11 @@ export default function DiscountItemsDropdown({ itemList, discountName, rate, se
   }
 
   const handleClickDelete = () => { 
-    let oldStorage:any = localStorage.getItem('discount')
-    let newSrotage:any = []
+    let oldStorage:string | null = localStorage.getItem('discount')
+    let newSrotage:Array<object> = []
     
-    newSrotage = JSON.parse(oldStorage)
-    newSrotage = newSrotage.filter((val:{[index:string]:string})=> val["name"] !== discountName )
+    newSrotage = JSON.parse(oldStorage || "{}")
+    newSrotage = newSrotage.filter((val:{[index:string]:any})=> val["name"] !== discountName )
 
     localStorage.setItem("discount", JSON.stringify(newSrotage))
     setselectDiscount(newSrotage)

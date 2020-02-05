@@ -17,13 +17,13 @@ export default function Card({ title, Data, show, renderTotal, setselectItems}:C
     let items:Array<string> = e.target.value.split(",")
     let name = items[0]
     let price = items[1]
-    let obj:any ={"name": name, "price":price, "count": "1"}
-    let oldStorage:any = localStorage.getItem('items')
-    let newSrotage:any = []
+    let obj:object ={"name": name, "price":price, "count": "1"}
+    let oldStorage:string | null = localStorage.getItem('items')
+    let newSrotage:any[] = []
     
     if(checked){
       setchecked(false)
-      newSrotage = JSON.parse(oldStorage)
+      newSrotage = JSON.parse(oldStorage || "{}")
       newSrotage = newSrotage.filter((val:{[index:string]:string}) => val["name"] !== name)
       localStorage.setItem("items", JSON.stringify(newSrotage))
     } else {
@@ -42,9 +42,9 @@ export default function Card({ title, Data, show, renderTotal, setselectItems}:C
     let name = discount[0]
     let rate = discount[1]
 
-    let itemStorage:any = localStorage.getItem('items')
-    let itemList = JSON.parse(itemStorage)
-    let itemsName:any = []
+    let itemStorage: string | null = localStorage.getItem('items')
+    let itemList = JSON.parse(itemStorage || "{}")
+    let itemsName:any[] = []
     let itemsPrice = 0
     
     if(itemList){
@@ -55,14 +55,14 @@ export default function Card({ title, Data, show, renderTotal, setselectItems}:C
     }
     let itemDiscount = itemsPrice * rate
 
-    let obj:any ={"name": name, "rate":rate, "items": itemsName, "discount": itemDiscount}
-    let oldStorage:any = localStorage.getItem('discount')
-    let newSrotage:any = []
+    let obj:object ={"name": name, "rate":rate, "items": itemsName, "discount": itemDiscount}
+    let oldStorage:string | null = localStorage.getItem('discount')
+    let newSrotage:any[] = []
     
        
     if(checked){
       setchecked(false)
-      newSrotage = JSON.parse(oldStorage)
+      newSrotage = JSON.parse(oldStorage || "{}")
       newSrotage = newSrotage.filter((val:{[index:string]:string}) => val["name"] !== name)
       localStorage.setItem("discount", JSON.stringify(newSrotage))
     } else {

@@ -16,16 +16,16 @@ export default function Items({ show, setshow, Data, title, setselectItems, rend
   
   const handleClickCheck = ():void => {
     setshow(false)
-    let storageData:any= localStorage.getItem("items")
-    localStorage.setItem("previtems", storageData)
-    setselectItems(JSON.parse(storageData))
+    let storageData:string | null= localStorage.getItem("items")
+    localStorage.setItem("previtems", storageData || "{}")
+    setselectItems(JSON.parse(storageData || "{}"))
   
     renderTotal()
   }
 
   const handleClickCancle = ():void => {
     setshow(false)
-    let prevStorage:any = localStorage.getItem("previtems")
+    let prevStorage:string | null = localStorage.getItem("previtems")
     prevStorage ? localStorage.setItem("items", prevStorage) : localStorage.removeItem("items")
 
   }

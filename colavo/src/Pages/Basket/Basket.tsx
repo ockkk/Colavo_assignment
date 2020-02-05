@@ -21,18 +21,18 @@ export default function Basket() {
   })
 
   const [showItems, setshowItems] = useState<boolean>(false)
-  const [selectItems, setselectItems] = useState<any>([])
+  const [selectItems, setselectItems] = useState([])
 
   const [showDiscounts, setshowDiscounts] = useState<boolean>(false)
-  const [selectDiscount, setselectDiscount] = useState<any>([])
+  const [selectDiscount, setselectDiscount] = useState([])
 
   const [total, settotal] = useState("0")
 
   const renderTotal = () => {
-    let itemStorage:any = localStorage.getItem("items")
-    let itemList = JSON.parse(itemStorage)
-    let discountStorage:any = localStorage.getItem("discount")
-    let discountList = JSON.parse(discountStorage)
+    let itemStorage:string | null = localStorage.getItem("items")
+    let itemList = JSON.parse(itemStorage || "{}")
+    let discountStorage:string | null = localStorage.getItem("discount")
+    let discountList = JSON.parse(discountStorage || "{}")
     let sum = 0
 
     if(itemList){

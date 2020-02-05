@@ -3,9 +3,9 @@ import {DiscountMenu, Btn} from './stlye'
 import { Menu, Dropdown, Icon, Button } from 'antd'
 
 type DiscountItemsDropdown = {
-  itemList:Array<{[index:string]:string}>
+  itemList:any
   discountName:string
-  rate:number
+  rate:any
   setselectDiscount:Function
   renderTotal:Function
 }
